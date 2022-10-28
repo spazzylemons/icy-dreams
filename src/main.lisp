@@ -34,8 +34,8 @@
         (raylib:clear-background raylib:+black+)
         (raylib:draw-texture-pro texture src-rect dst-rect (3d-vectors:vec 0.0 0.0) 0.0 raylib:+white+)))))
 
-(let ((obj-a (spawn 'player))
-      (obj-b (spawn 'player)))
+(let ((obj-a (spawn-player))
+      (obj-b (spawn-player)))
   (setf (game-object-x obj-a) 10.0)
   (setf (game-object-y obj-a) 10.0)
   (setf (game-object-x obj-b) 40.0)

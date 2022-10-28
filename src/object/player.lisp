@@ -12,3 +12,8 @@
 
 (defun draw-player (obj)
   (draw-sprite (game-object-x obj) (game-object-y obj) 0 nil))
+
+(defparameter *behavior-player* (make-object-bhv :update #'update-player :draw #'draw-player))
+
+(defun spawn-player ()
+  (spawn *behavior-player*))
