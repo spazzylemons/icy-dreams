@@ -29,14 +29,23 @@
   (if (raylib:is-key-down raylib:+key-down+)
     (incf (game-object-y *test-object*))))
 
+(defvar *spritesheet*)
+
+(defun draw-sprite (x y id flipped)
+  (let ((src (raylib:make-rectangle :x 0.0
+                                    :y (* id 16.0)
+                                    :width (if flipped -16.0 16.0)
+                                    :height 16.0)))
+    (raylib:draw-texture-rec *spritesheet*
+                             src
+                             (3d-vectors:vec (round x) (round y))
+                             raylib:+white+)))
+
 (defun render-game ()
   (raylib:clear-background raylib:+white+)
   (raylib:draw-text "hello world!" 10 10 20 raylib:+red+)
   (dolist (obj *game-objects*)
-    (raylib:draw-text "Object" (round (game-object-x obj))
-                               (round (game-object-y obj))
-                               20
-                               raylib:+green+)))
+    (draw-sprite (game-object-x obj) (game-object-y obj) 0 nil)))
 
 (defun main-loop (target-texture)
   (loop
@@ -71,6 +80,7 @@
 
 (raylib:set-config-flags '(:flag-window-resizable :flag-vsync-hint))
 (raylib:with-window ((* *screen-width* 2) (* *screen-height* 2) "Icy Dreams")
+  (setf *spritesheet* (raylib:load-texture "assets/spritesheet.png"))
   (raylib:set-window-min-size *screen-width* *screen-height*)
   (let ((target-texture (raylib:load-render-texture *screen-width* *screen-height*)))
     (unwind-protect (main-loop target-texture))
