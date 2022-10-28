@@ -7,8 +7,8 @@
   (update-objects))
 
 (defun render-game ()
-  (raylib:clear-background raylib:+white+)
-  (raylib:draw-text "hello world!" 10 10 20 raylib:+red+)
+  (raylib:clear-background raylib:+black+)
+  (draw-stage)
   (draw-objects))
 
 (defun main-loop (target-texture)
@@ -44,6 +44,7 @@
 (raylib:set-config-flags '(:flag-window-resizable :flag-vsync-hint))
 (raylib:with-window ((* *screen-width* 2) (* *screen-height* 2) "Icy Dreams")
   (load-spritesheet)
+  (prerender-stage)
   (raylib:set-window-min-size *screen-width* *screen-height*)
   (let ((target-texture (raylib:load-render-texture *screen-width* *screen-height*)))
     (unwind-protect (main-loop target-texture))
