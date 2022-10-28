@@ -5,3 +5,6 @@
 
 ;; Behavior for an object.
 (defstruct object-bhv update draw)
+
+;; A stage description.
+(defstruct stage-desc tile tilemap)

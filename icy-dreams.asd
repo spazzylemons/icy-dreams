@@ -7,7 +7,10 @@
   :pathname "src"
   :serial t
   :components ((:file "package")
+               (:file "constants")
                (:file "types")
+               (:file "stages")
+               (:file "stage")
                (:file "sprite")
                (:file "object/player")
                (:file "object")

@@ -15,5 +15,5 @@
                                     :height 16.0)))
     (raylib:draw-texture-rec *spritesheet*
                              src
-                             (3d-vectors:vec (round x) (round y))
+                             (3d-vectors:vec (round (- x 8.0)) (round (- y 8.0)))
                              raylib:+white+)))
