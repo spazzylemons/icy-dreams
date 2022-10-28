@@ -1,0 +1,2 @@
+#!/bin/sh
+exec sbcl --load run.lisp --quit
