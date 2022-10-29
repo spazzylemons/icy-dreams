@@ -12,6 +12,6 @@
                (:file "stages")
                (:file "stage")
                (:file "sprite")
-               (:file "object/player")
                (:file "object")
+               (:file "object/player")
                (:file "main")))

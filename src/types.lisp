@@ -1,7 +1,7 @@
 (in-package :icy-dreams)
 
 ;; The game object type.
-(defstruct game-object x y xvel yvel grounded has-physics id bhv)
+(defstruct game-object x y xvel yvel grounded has-physics anim-timer direction id bhv)
 
 ;; Behavior for an object.
 (defstruct object-bhv update draw)

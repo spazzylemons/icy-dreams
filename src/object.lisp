@@ -12,6 +12,8 @@
                   :yvel 0.0
                   :grounded nil
                   :has-physics t
+                  :anim-timer 0
+                  :direction 'left
                   :id (gensym)
                   :bhv bhv)))
     (push result *game-objects*)
@@ -64,7 +66,11 @@
                (when (< (game-object-xvel obj) 0.0) (setf (game-object-xvel obj) 0.0)))
               ((< (game-object-xvel obj) 0.0)
                (setf (game-object-xvel obj) (+ (game-object-xvel obj) 0.125))
-               (when (> (game-object-xvel obj) 0.0) (setf (game-object-xvel obj) 0.0))))))))
+               (when (> (game-object-xvel obj) 0.0) (setf (game-object-xvel obj) 0.0)))))
+      (setf (game-object-anim-timer obj)
+            (if (= (game-object-xvel obj) 0)
+                0
+                (rem (+ (game-object-anim-timer obj) (abs (/ (game-object-xvel obj) 16))) 1))))))
 
 ;; Draw all objects.
 (defun draw-objects ()
