@@ -34,12 +34,9 @@
         (raylib:clear-background raylib:+black+)
         (raylib:draw-texture-pro texture src-rect dst-rect (3d-vectors:vec 0.0 0.0) 0.0 raylib:+white+)))))
 
-(let ((obj-a (spawn-player))
-      (obj-b (spawn-player)))
-  (setf (game-object-x obj-a) 10.0)
-  (setf (game-object-y obj-a) 10.0)
-  (setf (game-object-x obj-b) 40.0)
-  (setf (game-object-y obj-b) 40.0))
+(let ((player (spawn-player)))
+  (setf (game-object-x player) 32.0)
+  (setf (game-object-y player) 32.0))
 
 (raylib:set-config-flags '(:flag-window-resizable :flag-vsync-hint))
 (raylib:with-window ((* *screen-width* 2) (* *screen-height* 2) "Icy Dreams")

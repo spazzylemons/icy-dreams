@@ -7,8 +7,8 @@
 
 ;; Takes in a position, not a tile grid index.
 (defun collision (x y)
-  (let ((tx (round (/ x 8)))
-        (ty (round (/ y 8))))
+  (let ((tx (floor (/ x 8)))
+        (ty (floor (/ y 8))))
     (if (or (< tx 0)
             (>= tx *stage-width*)
             (< ty 0)
