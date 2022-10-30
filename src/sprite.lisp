@@ -25,7 +25,9 @@
 (spritesheet-enum
   *sprite-player-idle*
   *sprite-player-walk1*
-  *sprite-player-walk2*)
+  *sprite-player-walk2*
+  *sprite-player-attack*
+  *sprite-ice-cloud*)
 
 ;; Load the spritesheet. Must be done after opening the window.
 (defun load-spritesheet ()

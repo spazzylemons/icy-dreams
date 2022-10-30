@@ -13,5 +13,6 @@
                (:file "stage")
                (:file "sprite")
                (:file "object")
+               (:file "object/ice-cloud")
                (:file "object/player")
                (:file "main")))

@@ -3,6 +3,12 @@
 ;; The list of game objects.
 (defparameter *game-objects* nil)
 
+;; The list of game objects pending for spawning.
+(defparameter *pending-objects* nil)
+
+;; The list of game objects pending for despawning.
+(defparameter *pending-despawns* nil)
+
 ;; Spawn a game object. Returns the object.
 (defun spawn (bhv)
   (let ((result (make-game-object
@@ -13,21 +19,48 @@
                   :grounded nil
                   :has-physics t
                   :anim-timer 0
-                  :direction 'left
+                  :direction 'right
+                  :despawn-timer nil
                   :id (gensym)
                   :bhv bhv)))
-    (push result *game-objects*)
+    (push result *pending-objects*)
     result))
 
 ;; Remove a game object from the list of game objects.
 (defun despawn (obj)
-  (delete obj *game-objects*))
+  (push obj *pending-despawns*))
+
+;; Check if collision occurred to the left of an object.
+(defun left-collision (obj)
+  (or (collision (- (game-object-x obj) 8) (- (game-object-y obj) 5))
+      (collision (- (game-object-x obj) 8) (game-object-y obj))
+      (collision (- (game-object-x obj) 8) (+ (game-object-y obj) 6))))
+
+;; Check if collision occurred to the right of an object.
+(defun right-collision (obj)
+  (or (collision (+ (game-object-x obj) 7) (- (game-object-y obj) 5))
+      (collision (+ (game-object-x obj) 7) (game-object-y obj))
+      (collision (+ (game-object-x obj) 7) (+ (game-object-y obj) 6))))
 
 ;; Update all objects.
 (defun update-objects ()
+  ; Move all pending objects to the object list.
+  (dolist (obj *pending-objects*)
+    (push obj *game-objects*))
+  (setf *pending-objects* nil)
+  ; per-object behavior
   (dolist (obj *game-objects*)
     (apply (object-bhv-update (game-object-bhv obj)) (list obj)))
-  ; common logic - velocity, gravity, collision, friction - if physics enabled
+  ; despawn objects if needed
+  (dolist (obj *game-objects*)
+    (when (game-object-despawn-timer obj)
+      (decf (game-object-despawn-timer obj))
+      (when (<= (game-object-despawn-timer obj) 0)
+        (despawn obj))))
+  ; do all despawns
+  (dolist (obj *pending-despawns*)
+    (setf *game-objects* (delete obj *game-objects*)))
+  ; common logic
   (dolist (obj *game-objects*)
     (when (game-object-has-physics obj)
       (setf (game-object-grounded obj) nil)
@@ -51,12 +84,10 @@
              (setf (game-object-yvel obj) 0.0)
              (setf (game-object-grounded obj) t)
              (setf (game-object-y obj) (float (* (floor (/ (game-object-y obj) 8)) 8)))))
-      (cond ((or (collision (- (game-object-x obj) 8) (- (game-object-y obj) 5))
-                 (collision (- (game-object-x obj) 8) (+ (game-object-y obj) 6)))
+      (cond ((left-collision obj)
              (setf (game-object-xvel obj) 0.0)
              (setf (game-object-x obj) (float (+ (* (floor (/ (game-object-x obj) 8)) 8) 8))))
-            ((or (collision (+ (game-object-x obj) 7) (- (game-object-y obj) 5))
-                 (collision (+ (game-object-x obj) 7) (+ (game-object-y obj) 6)))
+            ((right-collision obj)
              (setf (game-object-xvel obj) 0.0)
              (setf (game-object-x obj) (float (* (floor (/ (game-object-x obj) 8)) 8)))))
       ; add friction if grounded

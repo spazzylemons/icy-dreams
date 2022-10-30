@@ -11,8 +11,10 @@
   (when (raylib:is-key-down raylib:+key-right+)
     (setf (game-object-direction obj) 'right)
     (setf (game-object-xvel obj) (+ (game-object-xvel obj) *player-accel*)))
-  (when (and (game-object-grounded obj) (raylib:is-key-pressed raylib:+key-space+))
+  (when (and (game-object-grounded obj) (raylib:is-key-pressed raylib:+key-x+))
     (setf (game-object-yvel obj) (- *terminal-velocity*)))
+  (when (raylib:is-key-pressed raylib:+key-z+)
+    (spawn-ice-cloud obj))
   (cond ((> (game-object-xvel obj) *player-maxvel*) (setf (game-object-xvel obj) *player-maxvel*))
         ((< (game-object-xvel obj) (- *player-maxvel*)) (setf (game-object-xvel obj) (- *player-maxvel*)))))
 
@@ -23,7 +25,8 @@
                                                        *sprite-player-idle*)))
 
 (defun draw-player (obj)
-  (let ((sprite (cond ((not (game-object-grounded obj)) *sprite-player-walk2*)
+  (let ((sprite (cond ((raylib:is-key-down raylib:+key-z+) *sprite-player-attack*)
+                      ((not (game-object-grounded obj)) *sprite-player-walk2*)
                       ((= (game-object-xvel obj) 0.0) *sprite-player-idle*)
                       (t (aref *player-walk-sprites* (floor (* (game-object-anim-timer obj) 4)))))))
     (draw-sprite (game-object-x obj) (game-object-y obj) sprite (eql (game-object-direction obj) 'left))))
