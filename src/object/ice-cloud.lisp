@@ -13,7 +13,9 @@
 (defun draw-ice-cloud (obj)
   (draw-sprite (game-object-x obj) (game-object-y obj) *sprite-ice-cloud* nil))
 
-(defparameter *behavior-ice-cloud* (make-object-bhv :update #'update-ice-cloud :draw #'draw-ice-cloud))
+(defparameter *behavior-ice-cloud* (make-object-bhv :update #'update-ice-cloud
+                                                    :draw #'draw-ice-cloud
+                                                    :collision 'attack))
 
 (defun spawn-ice-cloud (player)
   (let ((result (spawn *behavior-ice-cloud*)))

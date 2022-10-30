@@ -31,7 +31,9 @@
                       (t (aref *player-walk-sprites* (floor (* (game-object-anim-timer obj) 4)))))))
     (draw-sprite (game-object-x obj) (game-object-y obj) sprite (eql (game-object-direction obj) 'left))))
 
-(defparameter *behavior-player* (make-object-bhv :update #'update-player :draw #'draw-player))
+(defparameter *behavior-player* (make-object-bhv :update #'update-player
+                                                 :draw #'draw-player
+                                                 :collision 'player))
 
 (defun spawn-player ()
   (spawn *behavior-player*))

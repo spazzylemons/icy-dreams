@@ -9,7 +9,10 @@
 (defun render-game ()
   (raylib:clear-background raylib:+black+)
   (draw-stage)
-  (draw-objects))
+  (draw-objects)
+  ; draw black bars to mask object wraparound
+  (raylib:draw-rectangle 0 0 *screen-width* 16 raylib:+black+)
+  (raylib:draw-rectangle 0 (- *screen-height* 16) *screen-width* 16 raylib:+black+))
 
 (defun main-loop (target-texture)
   (loop
@@ -41,7 +44,7 @@
 (raylib:set-config-flags '(:flag-window-resizable :flag-vsync-hint))
 (raylib:with-window ((* *screen-width* 2) (* *screen-height* 2) "Icy Dreams")
   (load-spritesheet)
-  (prerender-stage)
+  (load-stage)
   (raylib:set-window-min-size *screen-width* *screen-height*)
   (let ((target-texture (raylib:load-render-texture *screen-width* *screen-height*)))
     (unwind-protect (main-loop target-texture))

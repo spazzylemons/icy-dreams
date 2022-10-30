@@ -101,7 +101,23 @@
       (setf (game-object-anim-timer obj)
             (if (= (game-object-xvel obj) 0)
                 0
-                (rem (+ (game-object-anim-timer obj) (abs (/ (game-object-xvel obj) 16))) 1))))))
+                (rem (+ (game-object-anim-timer obj) (abs (/ (game-object-xvel obj) 16))) 1))))
+      ; wrap vertically
+      (setf (game-object-y obj) (mod (game-object-y obj) (* *stage-height* 8))))
+  ; object-object collision
+  (dolist (obj1 *game-objects*)
+    (dolist (obj2 *game-objects*)
+      (let ((collision1 (object-bhv-collision (game-object-bhv obj1)))
+            (collision2 (object-bhv-collision (game-object-bhv obj2)))
+            (dx (abs (- (game-object-x obj1) (game-object-x obj2))))
+            (dy (abs (- (mod (game-object-y obj1) (* *stage-height* 8))
+                        (mod (game-object-y obj2) (* *stage-height* 8))))))
+        ; do they collide?
+        (when (and (<= dx 16) (<= dy 16))
+          ; if so, check collision result
+          (cond ((and (equal collision1 'attack) (equal collision2 'enemy))
+                 ; attack turns enemy into ice
+                 (turn-to-ice obj2))))))))
 
 ;; Draw all objects.
 (defun draw-objects ()

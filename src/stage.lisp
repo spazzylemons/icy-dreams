@@ -8,15 +8,13 @@
 ;; Takes in a position, not a tile grid index.
 (defun collision (x y)
   (let ((tx (floor (/ x 8)))
-        (ty (floor (/ y 8))))
+        (ty (mod (floor (/ y 8)) *stage-height*)))
     (if (or (< tx 0)
-            (>= tx *stage-width*)
-            (< ty 0)
-            (>= ty *stage-height*))
+            (>= tx *stage-width*))
       t
       (= 1 (aref (stage-desc-tilemap *current-stage*) ty tx)))))
 
-(defun prerender-stage ()
+(defun load-stage ()
   (unless *stage-texture*
     (setq *stage-texture* (raylib:load-render-texture (* *stage-width* 8) (* *stage-height* 8))))
   (unless *tile-texture*
@@ -38,7 +36,8 @@
                                                       :width 8
                                                       :height 8)
                                                     (3d-vectors:vec px py)
-                                                    raylib:+white+)))))))
+                                                    raylib:+white+))))))
+  (eval (stage-desc-enemies *current-stage*)))
 
 (defun draw-stage ()
   (let ((texture (raylib:render-texture-texture *stage-texture*)))
