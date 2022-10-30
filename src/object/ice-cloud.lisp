@@ -23,4 +23,4 @@
     (setf (game-object-x result) (game-object-x player))
     (setf (game-object-y result) (game-object-y player))
     (setf (game-object-direction result) (game-object-direction player))
-    (setf (game-object-despawn-timer result) 20)))
+    (setf (game-object-despawn-timer result) 30)))

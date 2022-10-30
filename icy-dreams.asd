@@ -14,6 +14,7 @@
                (:file "sprite")
                (:file "object")
                (:file "object/ice-cloud")
+               (:file "object/ice-shard")
                (:file "object/ice-block")
                (:file "object/player")
                (:file "object/roller")

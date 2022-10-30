@@ -27,9 +27,15 @@
   *sprite-player-walk1*
   *sprite-player-walk2*
   *sprite-player-attack*
+  *sprite-player-throw-idle*
+  *sprite-player-throw-walk1*
+  *sprite-player-throw-walk2*
+  *sprite-player-throw-attack*
   *sprite-ice-cloud*
   *sprite-ice-block*
-  *sprite-roller1*)
+  *sprite-ice-shard*
+  *sprite-roller1*
+  *sprite-roller2*)
 
 ;; Load the spritesheet. Must be done after opening the window.
 (defun load-spritesheet ()

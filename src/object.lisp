@@ -21,6 +21,8 @@
                   :anim-timer 0
                   :direction 'right
                   :despawn-timer nil
+                  :throw nil
+                  :hit-wall nil
                   :id (gensym)
                   :bhv bhv)))
     (push result *pending-objects*)
@@ -42,12 +44,15 @@
       (collision (+ (game-object-x obj) 7) (game-object-y obj))
       (collision (+ (game-object-x obj) 7) (+ (game-object-y obj) 6))))
 
+;; Check if two objects overlap.
+(defun object-collision (obj1 obj2)
+  (let ((dx (abs (- (game-object-x obj1) (game-object-x obj2))))
+        (dy (abs (- (mod (game-object-y obj1) (* *stage-height* 8))
+                    (mod (game-object-y obj2) (* *stage-height* 8))))))
+  (and (<= dx 16) (<= dy 16))))
+
 ;; Update all objects.
 (defun update-objects ()
-  ; Move all pending objects to the object list.
-  (dolist (obj *pending-objects*)
-    (push obj *game-objects*))
-  (setf *pending-objects* nil)
   ; per-object behavior
   (dolist (obj *game-objects*)
     (apply (object-bhv-update (game-object-bhv obj)) (list obj)))
@@ -57,9 +62,14 @@
       (decf (game-object-despawn-timer obj))
       (when (<= (game-object-despawn-timer obj) 0)
         (despawn obj))))
+  ; do all spawns
+  (dolist (obj *pending-objects*)
+    (push obj *game-objects*))
+  (setf *pending-objects* nil)
   ; do all despawns
   (dolist (obj *pending-despawns*)
     (setf *game-objects* (delete obj *game-objects*)))
+  (setf *pending-despawns* nil)
   ; common logic
   (dolist (obj *game-objects*)
     (when (game-object-has-physics obj)
@@ -71,23 +81,28 @@
             ((< (game-object-yvel obj) (- *terminal-velocity*))
              (setf (game-object-yvel obj) (- *terminal-velocity*))))
       ; collision
+      (setf (game-object-hit-wall obj) nil)
       (setf (game-object-x obj) (+ (game-object-x obj) (game-object-xvel obj)))
       (setf (game-object-y obj) (+ (game-object-y obj) (game-object-yvel obj)))
       (cond ((or (collision (- (game-object-x obj) 7) (- (game-object-y obj) 7))
                  (collision (game-object-x obj) (- (game-object-y obj) 7))
                  (collision (+ (game-object-x obj) 6) (- (game-object-y obj) 7)))
+             (setf (game-object-hit-wall obj) t)
              (setf (game-object-yvel obj) 0.0)
              (setf (game-object-y obj) (float (+ (* (floor (/ (game-object-y obj) 8)) 8) 8))))
             ((or (collision (- (game-object-x obj) 7) (+ (game-object-y obj) 8))
                  (collision (game-object-x obj) (+ (game-object-y obj) 8))
                  (collision (+ (game-object-x obj) 6) (+ (game-object-y obj) 8)))
+             (setf (game-object-hit-wall obj) t)
              (setf (game-object-yvel obj) 0.0)
              (setf (game-object-grounded obj) t)
              (setf (game-object-y obj) (float (* (floor (/ (game-object-y obj) 8)) 8)))))
       (cond ((left-collision obj)
+             (setf (game-object-hit-wall obj) t)
              (setf (game-object-xvel obj) 0.0)
              (setf (game-object-x obj) (float (+ (* (floor (/ (game-object-x obj) 8)) 8) 8))))
             ((right-collision obj)
+             (setf (game-object-hit-wall obj) t)
              (setf (game-object-xvel obj) 0.0)
              (setf (game-object-x obj) (float (* (floor (/ (game-object-x obj) 8)) 8)))))
       ; add friction if grounded
@@ -108,16 +123,18 @@
   (dolist (obj1 *game-objects*)
     (dolist (obj2 *game-objects*)
       (let ((collision1 (object-bhv-collision (game-object-bhv obj1)))
-            (collision2 (object-bhv-collision (game-object-bhv obj2)))
-            (dx (abs (- (game-object-x obj1) (game-object-x obj2))))
-            (dy (abs (- (mod (game-object-y obj1) (* *stage-height* 8))
-                        (mod (game-object-y obj2) (* *stage-height* 8))))))
+            (collision2 (object-bhv-collision (game-object-bhv obj2))))
         ; do they collide?
-        (when (and (<= dx 16) (<= dy 16))
+        (when (object-collision obj1 obj2)
           ; if so, check collision result
-          (cond ((and (equal collision1 'attack) (equal collision2 'enemy))
-                 ; attack turns enemy into ice
-                 (turn-to-ice obj2))))))))
+          (cond ((and (equal collision1 'enemy) (equal collision2 'attack))
+                 ; attack turns enemy into ice, destroys attack object
+                 (turn-to-ice obj1)
+                 (despawn obj2))
+                ((and (equal collision1 'enemy) (equal collision2 'ice-block))
+                  ; if the ice is being thrown, destroy the other enemy
+                  ; TODO animation for destroyed enemy
+                  (when (game-object-throw obj2) (despawn obj1)))))))))
 
 ;; Draw all objects.
 (defun draw-objects ()
