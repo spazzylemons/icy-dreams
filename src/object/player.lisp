@@ -63,4 +63,6 @@
                                                  :collision 'player))
 
 (defun spawn-player ()
-  (spawn *behavior-player*))
+  (let ((result (spawn *behavior-player*)))
+    (setf (game-object-x result) 32.0)
+    (setf (game-object-y result) 172.0)))

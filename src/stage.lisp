@@ -1,9 +1,12 @@
 (in-package :icy-dreams)
 
 (defparameter *current-stage* (car *stages*))
+(defparameter *next-stages* (cdr *stages*))
 
 (defparameter *stage-texture* nil)
 (defparameter *tile-texture* nil)
+
+(defparameter *level-transition-timer* nil)
 
 ;; Takes in a position, not a tile grid index.
 (defun collision (x y)
@@ -14,12 +17,17 @@
       t
       (= 1 (aref (stage-desc-tilemap *current-stage*) ty tx)))))
 
-(defun load-stage ()
-  (unless *stage-texture*
-    (setq *stage-texture* (raylib:load-render-texture (* *stage-width* 8) (* *stage-height* 8))))
-  (unless *tile-texture*
-    (setq *tile-texture* (raylib:load-texture "assets/tiles.png")))
+(defun next-stage ()
+  ; TODO endgame stuff
+  (unless *next-stages*
+    (sb-ext:exit))
+  (setf *current-stage* (car *next-stages*))
+  (setf *next-stages* (cdr *next-stages*))
+  (load-stage))
+
+(defun prerender-stage ()
   (raylib:with-texture-mode (*stage-texture*)
+    (raylib:clear-background raylib:+blank+)
     (dotimes (y *stage-height*)
       (dotimes (x *stage-width*)
         (let ((adjacent 0)
@@ -39,6 +47,15 @@
                                                     raylib:+white+))))))
   (eval (stage-desc-enemies *current-stage*)))
 
+(defun load-stage ()
+  (reset-objects)
+  (spawn-player)
+  (setf *level-transition-timer* 8)
+  (unless *stage-texture*
+    (setq *stage-texture* (raylib:load-render-texture (* *stage-width* 8) (* *stage-height* 8))))
+  (unless *tile-texture*
+    (setq *tile-texture* (raylib:load-texture "assets/tiles.png"))))
+
 (defun draw-stage ()
   (let ((texture (raylib:render-texture-texture *stage-texture*)))
     (raylib:draw-texture-pro texture
@@ -55,3 +72,11 @@
                              (3d-vectors:vec 0.0 0.0)
                              0.0
                              raylib:+white+)))
+
+(defun draw-transition ()
+  (when *level-transition-timer*
+    (dotimes (y *stage-height*)
+      (raylib:draw-rectangle 0 (+ (* y 8) 16) *screen-width* (- 8 (abs *level-transition-timer*)) raylib:+black+))
+    (decf *level-transition-timer*)
+    (when (= *level-transition-timer* -9)
+      (setf *level-transition-timer* nil))))

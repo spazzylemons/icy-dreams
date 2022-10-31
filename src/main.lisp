@@ -1,15 +1,17 @@
 (in-package :icy-dreams)
 
-(defparameter *screen-width* 256)
-(defparameter *screen-height* 224)
-
 (defun update-game ()
-  (update-objects))
+  (if *level-transition-timer*
+    (when (= *level-transition-timer* 0)
+      (prerender-stage))
+    (update-objects)))
 
 (defun render-game ()
   (raylib:clear-background raylib:+black+)
   (draw-stage)
-  (draw-objects)
+  (unless *level-transition-timer*
+    (draw-objects))
+  (draw-transition)
   ; draw black bars to mask object wraparound
   (raylib:draw-rectangle 0 0 *screen-width* 16 raylib:+black+)
   (raylib:draw-rectangle 0 (- *screen-height* 16) *screen-width* 16 raylib:+black+))
@@ -19,7 +21,7 @@
     (if (raylib:window-should-close) (return))
     (update-game)
     (let* ((scale (min (/ (float (raylib:get-screen-width)) *screen-width*)
-                      (/ (float (raylib:get-screen-height)) *screen-height*)))
+                       (/ (float (raylib:get-screen-height)) *screen-height*)))
            (width-scale (* scale *screen-width*))
            (height-scale (* scale *screen-height*))
            (texture (raylib:render-texture-texture target-texture))
@@ -37,14 +39,12 @@
         (raylib:clear-background raylib:+black+)
         (raylib:draw-texture-pro texture src-rect dst-rect (3d-vectors:vec 0.0 0.0) 0.0 raylib:+white+)))))
 
-(let ((player (spawn-player)))
-  (setf (game-object-x player) 32.0)
-  (setf (game-object-y player) 32.0))
-
 (raylib:set-config-flags '(:flag-window-resizable :flag-vsync-hint))
+(raylib:set-target-fps 60)
 (raylib:with-window ((* *screen-width* 2) (* *screen-height* 2) "Icy Dreams")
   (load-spritesheet)
   (load-stage)
+  ; (setf *level-transition-timer* 0)
   (raylib:set-window-min-size *screen-width* *screen-height*)
   (let ((target-texture (raylib:load-render-texture *screen-width* *screen-height*)))
     (unwind-protect (main-loop target-texture))

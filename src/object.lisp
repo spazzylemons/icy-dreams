@@ -9,6 +9,15 @@
 ;; The list of game objects pending for despawning.
 (defparameter *pending-despawns* nil)
 
+;; A timer for advancing to the next stage.
+(defparameter *stage-advance-timer* nil)
+
+;; Reset the object system.
+(defun reset-objects ()
+  (setf *game-objects* nil)
+  (setf *pending-objects* nil)
+  (setf *pending-despawns* nil))
+
 ;; Spawn a game object. Returns the object.
 (defun spawn (bhv)
   (let ((result (make-game-object
@@ -121,20 +130,44 @@
       (setf (game-object-y obj) (mod (game-object-y obj) (* *stage-height* 8))))
   ; object-object collision
   (dolist (obj1 *game-objects*)
-    (dolist (obj2 *game-objects*)
-      (let ((collision1 (object-bhv-collision (game-object-bhv obj1)))
-            (collision2 (object-bhv-collision (game-object-bhv obj2))))
-        ; do they collide?
-        (when (object-collision obj1 obj2)
-          ; if so, check collision result
-          (cond ((and (equal collision1 'enemy) (equal collision2 'attack))
-                 ; attack turns enemy into ice, destroys attack object
-                 (turn-to-ice obj1)
-                 (despawn obj2))
-                ((and (equal collision1 'enemy) (equal collision2 'ice-block))
-                  ; if the ice is being thrown, destroy the other enemy
-                  ; TODO animation for destroyed enemy
-                  (when (game-object-throw obj2) (despawn obj1)))))))))
+    (let ((attack-collision nil)
+          (ice-block-collision nil))
+      (dolist (obj2 *game-objects*)
+        (let ((collision1 (object-bhv-collision (game-object-bhv obj1)))
+              (collision2 (object-bhv-collision (game-object-bhv obj2))))
+          ; do they collide?
+          (when (object-collision obj1 obj2)
+            ; if so, check collision result
+            (cond ((and (equal collision1 'enemy) (equal collision2 'attack))
+                   (unless attack-collision (setq attack-collision obj2)))
+                  ((and (equal collision1 'enemy) (equal collision2 'ice-block) (game-object-throw obj2))
+                   (unless ice-block-collision (setq ice-block-collision obj2)))))))
+      ; check collisions, handle one based on priority
+      (cond (ice-block-collision
+             (despawn obj1))
+            (attack-collision
+             (turn-to-ice obj1)
+             (despawn attack-collision)))))
+  (block try-next-stage
+    ; is the timer running?
+    (when *stage-advance-timer*
+      ; if at 0, go to next level
+      (when (= *stage-advance-timer* 0)
+        (setq *stage-advance-timer* nil)
+        (next-stage)
+        (return-from try-next-stage))
+      ; decrement the timer
+      (decf *stage-advance-timer*)
+      (return-from try-next-stage))
+    (dolist (obj *game-objects*)
+      (when (equal (object-bhv-collision (game-object-bhv obj)) 'enemy)
+        (return-from try-next-stage))
+      (when (and (equal (object-bhv-collision (game-object-bhv obj)) 'player) (game-object-throw obj))
+        (return-from try-next-stage))
+      (when (equal (object-bhv-collision (game-object-bhv obj)) 'ice-block)
+        (return-from try-next-stage)))
+    ; no enemies left? start the advance timer
+    (setf *stage-advance-timer* 180)))
 
 ;; Draw all objects.
 (defun draw-objects ()

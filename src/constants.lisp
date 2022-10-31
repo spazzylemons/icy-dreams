@@ -1,5 +1,8 @@
 (in-package :icy-dreams)
 
+(defparameter *screen-width* 256)
+(defparameter *screen-height* 224)
+
 ;; The width of a stage, in tiles.
 (defparameter *stage-width* 32)
 
