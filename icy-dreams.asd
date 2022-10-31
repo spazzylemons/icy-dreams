@@ -18,4 +18,5 @@
                (:file "object/ice-block")
                (:file "object/player")
                (:file "object/roller")
+               (:file "object/springy")
                (:file "main")))

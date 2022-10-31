@@ -35,7 +35,9 @@
   *sprite-ice-block*
   *sprite-ice-shard*
   *sprite-roller1*
-  *sprite-roller2*)
+  *sprite-roller2*
+  *sprite-spring-tall*
+  *sprite-spring-short*)
 
 ;; Load the spritesheet. Must be done after opening the window.
 (defun load-spritesheet ()

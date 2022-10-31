@@ -3,6 +3,8 @@
 (defparameter *player-accel* 0.25)
 (defparameter *player-maxvel* 1.0)
 
+(defparameter *player-object* nil)
+
 (defun update-player (obj)
   ; (unless (collision (game-object-x obj) (game-object-y obj))
   (when (raylib:is-key-down raylib:+key-left+)
@@ -64,5 +66,6 @@
 
 (defun spawn-player ()
   (let ((result (spawn *behavior-player*)))
+    (setf *player-object* result)
     (setf (game-object-x result) 32.0)
     (setf (game-object-y result) 172.0)))
