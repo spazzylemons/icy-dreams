@@ -20,7 +20,7 @@
 (defun next-stage ()
   ; TODO endgame stuff
   (unless *next-stages*
-    (sb-ext:exit))
+    (signal 'game-complete))
   (setf *current-stage* (car *next-stages*))
   (setf *next-stages* (cdr *next-stages*))
   (load-stage))

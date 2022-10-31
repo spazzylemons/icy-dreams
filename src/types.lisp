@@ -8,3 +8,6 @@
 
 ;; A stage description.
 (defstruct stage-desc tile tilemap enemies)
+
+;; The condition in which a game is completed.
+(define-condition game-complete () ())

@@ -19,7 +19,9 @@
 (defun main-loop (target-texture)
   (loop
     (if (raylib:window-should-close) (return))
-    (update-game)
+    (handler-case (update-game)
+      (game-complete ()
+        (return)))
     (let* ((scale (min (/ (float (raylib:get-screen-width)) *screen-width*)
                        (/ (float (raylib:get-screen-height)) *screen-height*)))
            (width-scale (* scale *screen-width*))
