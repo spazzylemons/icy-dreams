@@ -16,9 +16,12 @@
   (raylib:draw-rectangle 0 0 *screen-width* 16 raylib:+black+)
   (raylib:draw-rectangle 0 (- *screen-height* 16) *screen-width* 16 raylib:+black+))
 
-(defun main-loop (target-texture)
+
+(defun main-loop-with-music (target-texture music)
+  (raylib:play-music-stream music)
   (loop
     (if (raylib:window-should-close) (return))
+    (raylib:update-music-stream music)
     (handler-case (update-game)
       (game-complete ()
         (return)))
@@ -41,13 +44,18 @@
         (raylib:clear-background raylib:+black+)
         (raylib:draw-texture-pro texture src-rect dst-rect (3d-vectors:vec 0.0 0.0) 0.0 raylib:+white+)))))
 
+(defun main-loop (target-texture)
+  (let ((music (raylib:load-music-stream "assets/theme.ogg")))
+    (unwind-protect (main-loop-with-music target-texture music))
+    (raylib:unload-music-stream music)))
+
 (raylib:set-config-flags '(:flag-window-resizable :flag-vsync-hint))
 (raylib:set-target-fps 60)
 (raylib:with-window ((* *screen-width* 2) (* *screen-height* 2) "Icy Dreams")
   (load-spritesheet)
   (load-stage)
-  ; (setf *level-transition-timer* 0)
-  (raylib:set-window-min-size *screen-width* *screen-height*)
-  (let ((target-texture (raylib:load-render-texture *screen-width* *screen-height*)))
-    (unwind-protect (main-loop target-texture))
-    (raylib:unload-render-texture target-texture)))
+  (raylib:with-audio-device
+    (raylib:set-window-min-size *screen-width* *screen-height*)
+    (let ((target-texture (raylib:load-render-texture *screen-width* *screen-height*)))
+      (unwind-protect (main-loop target-texture))
+      (raylib:unload-render-texture target-texture))))
