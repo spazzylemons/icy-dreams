@@ -1,5 +1,11 @@
 (in-package :icy-dreams)
 
+(defun shatter-ice-block (obj)
+  (spawn-ice-shard obj)
+  (spawn-ice-shard obj)
+  (spawn-ice-shard obj)
+  (despawn obj))
+
 (defun update-ice-block (obj)
   ; only special logic if thrown
   (when (game-object-throw obj)
@@ -9,10 +15,7 @@
     (setf (game-object-y obj) (- (game-object-y obj) (/ (game-object-yvel obj) 2.0)))
     ; if hit a wall, then shatter
     (when (game-object-hit-wall obj)
-      (spawn-ice-shard obj)
-      (spawn-ice-shard obj)
-      (spawn-ice-shard obj)
-      (despawn obj))))
+      (shatter-ice-block obj))))
 
 (defun draw-ice-block (obj)
   (draw-sprite (game-object-x obj) (game-object-y obj) *sprite-ice-block* nil))

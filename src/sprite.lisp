@@ -37,7 +37,10 @@
   *sprite-roller1*
   *sprite-roller2*
   *sprite-spring-tall*
-  *sprite-spring-short*)
+  *sprite-spring-short*
+  *sprite-hardened-walk1*
+  *sprite-hardened-walk2*
+  *sprite-hardened-hide*)
 
 ;; Load the spritesheet. Must be done after opening the window.
 (defun load-spritesheet ()

@@ -1,5 +1,8 @@
 (in-package :icy-dreams)
 
+;; Forward declaration for hardened special case.
+(defparameter *behavior-hardened* nil)
+
 ;; The list of game objects.
 (defparameter *game-objects* nil)
 
@@ -30,6 +33,7 @@
                   :anim-timer 0
                   :direction 'right
                   :despawn-timer nil
+                  :other-timer nil
                   :throw nil
                   :hit-wall nil
                   :id (gensym)
@@ -67,6 +71,10 @@
     (apply (object-bhv-update (game-object-bhv obj)) (list obj)))
   ; despawn objects if needed
   (dolist (obj *game-objects*)
+    (when (game-object-other-timer obj)
+      (decf (game-object-other-timer obj))
+      (when (<= (game-object-other-timer obj) 0)
+        (setf (game-object-other-timer obj) nil)))
     (when (game-object-despawn-timer obj)
       (decf (game-object-despawn-timer obj))
       (when (<= (game-object-despawn-timer obj) 0)
@@ -131,23 +139,30 @@
   ; object-object collision
   (dolist (obj1 *game-objects*)
     (let ((attack-collision nil)
+          (ice-block-bhv nil)
           (ice-block-collision nil))
       (dolist (obj2 *game-objects*)
-        (let ((collision1 (object-bhv-collision (game-object-bhv obj1)))
-              (collision2 (object-bhv-collision (game-object-bhv obj2))))
+        (let* ((bhv1 (game-object-bhv obj1))
+               (bhv2 (game-object-bhv obj2))
+               (collision1 (object-bhv-collision bhv1))
+               (collision2 (object-bhv-collision bhv2)))
           ; do they collide?
           (when (object-collision obj1 obj2)
             ; if so, check collision result
             (cond ((and (equal collision1 'enemy) (equal collision2 'attack))
                    (unless attack-collision (setq attack-collision obj2)))
                   ((and (equal collision1 'enemy) (equal collision2 'ice-block) (game-object-throw obj2))
-                   (unless ice-block-collision (setq ice-block-collision obj2)))))))
+                   (unless ice-block-collision (setq ice-block-collision obj2) (setq ice-block-bhv bhv1)))))))
       ; check collisions, handle one based on priority
       (cond (ice-block-collision
-             (despawn obj1))
+              (if (equal ice-block-bhv *behavior-hardened*)
+                (progn
+                  (shatter-ice-block ice-block-collision)
+                  (setf (game-object-other-timer obj1) 20))
+                (despawn obj1)))
             (attack-collision
-             (turn-to-ice obj1)
-             (despawn attack-collision)))))
+              (turn-to-ice obj1)
+              (despawn attack-collision)))))
   (block try-next-stage
     ; is the timer running?
     (when *stage-advance-timer*
