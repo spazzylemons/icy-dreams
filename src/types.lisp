@@ -7,7 +7,7 @@
 (defstruct object-bhv update draw collision)
 
 ;; A stage description.
-(defstruct stage-desc tile tilemap enemies)
+(defstruct stage-desc tile tilemap)
 
 ;; The condition in which a game is completed.
 (define-condition game-complete () ())

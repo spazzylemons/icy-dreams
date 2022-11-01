@@ -54,6 +54,12 @@
 (raylib:with-window ((* *screen-width* 2) (* *screen-height* 2) "Icy Dreams")
   (load-spritesheet)
   (load-stage)
+
+  ; uncomment to jump to last stage for testing
+  ; (block jump-last-stage
+  ;   (loop
+  ;     (unless *next-stages* (return-from jump-last-stage))
+  ;     (next-stage)))
   (raylib:with-audio-device
     (raylib:set-window-min-size *screen-width* *screen-height*)
     (let ((target-texture (raylib:load-render-texture *screen-width* *screen-height*)))

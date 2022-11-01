@@ -32,7 +32,10 @@
       (dotimes (x *stage-width*)
         (let ((adjacent 0)
               (px (* x 8))
-              (py (* y 8)))
+              (py (* y 8))
+              (tile-here (aref (stage-desc-tilemap *current-stage*) y x)))
+          (cond ((= tile-here 2) (spawn-roller px py))
+                ((= tile-here 3) (spawn-springy px py)))
           (when (collision px py)
             (if (collision px (- py 8)) (setq adjacent (logior adjacent 1)))
             (if (collision (+ px 8) py) (setq adjacent (logior adjacent 2)))
@@ -44,8 +47,7 @@
                                                       :width 8
                                                       :height 8)
                                                     (3d-vectors:vec px py)
-                                                    raylib:+white+))))))
-  (eval (stage-desc-enemies *current-stage*)))
+                                                    raylib:+white+)))))))
 
 (defun load-stage ()
   (reset-objects)
