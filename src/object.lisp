@@ -3,6 +3,9 @@
 ;; Forward declaration for hardened special case.
 (defparameter *behavior-hardened* nil)
 
+;; Forward declaration for bat special case.
+(defparameter *behavior-bat* nil)
+
 ;; The list of game objects.
 (defparameter *game-objects* nil)
 
@@ -57,6 +60,12 @@
       (collision (+ (game-object-x obj) 7) (game-object-y obj))
       (collision (+ (game-object-x obj) 7) (+ (game-object-y obj) 6))))
 
+;; Check if collision occurred above an object.
+(defun up-collision (obj)
+  (or (collision (- (game-object-x obj) 7) (- (game-object-y obj) 7))
+      (collision (game-object-x obj) (- (game-object-y obj) 7))
+      (collision (+ (game-object-x obj) 6) (- (game-object-y obj) 7))))
+
 ;; Check if two objects overlap.
 (defun object-collision (obj1 obj2)
   (let ((dx (abs (- (game-object-x obj1) (game-object-x obj2))))
@@ -91,8 +100,9 @@
   (dolist (obj *game-objects*)
     (when (game-object-has-physics obj)
       (setf (game-object-grounded obj) nil)
-      ; gravity
-      (setf (game-object-yvel obj) (+ (game-object-yvel obj) *gravity*))
+      ; gravity - unless bat
+      (unless (eql (game-object-bhv obj) *behavior-bat*)
+        (setf (game-object-yvel obj) (+ (game-object-yvel obj) *gravity*)))
       (cond ((> (game-object-yvel obj) *terminal-velocity*)
              (setf (game-object-yvel obj) *terminal-velocity*))
             ((< (game-object-yvel obj) (- *terminal-velocity*))
@@ -101,9 +111,7 @@
       (setf (game-object-hit-wall obj) nil)
       (setf (game-object-x obj) (+ (game-object-x obj) (game-object-xvel obj)))
       (setf (game-object-y obj) (+ (game-object-y obj) (game-object-yvel obj)))
-      (cond ((or (collision (- (game-object-x obj) 7) (- (game-object-y obj) 7))
-                 (collision (game-object-x obj) (- (game-object-y obj) 7))
-                 (collision (+ (game-object-x obj) 6) (- (game-object-y obj) 7)))
+      (cond ((up-collision obj)
              (setf (game-object-hit-wall obj) t)
              (setf (game-object-yvel obj) 0.0)
              (setf (game-object-y obj) (float (+ (* (floor (/ (game-object-y obj) 8)) 8) 8))))

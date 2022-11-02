@@ -7,6 +7,7 @@
 (setf (gethash '(255 0 0) *stage-palette*) 2)
 (setf (gethash '(0 255 0) *stage-palette*) 3)
 (setf (gethash '(0 0 255) *stage-palette*) 4)
+(setf (gethash '(255 0 255) *stage-palette*) 5)
 
 (defparameter *stages* (list
   (make-stage-desc :tile 0)

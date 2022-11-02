@@ -40,7 +40,10 @@
   *sprite-spring-short*
   *sprite-hardened-walk1*
   *sprite-hardened-walk2*
-  *sprite-hardened-hide*)
+  *sprite-hardened-hide*
+  *sprite-bat-hang*
+  *sprite-bat-flap1*
+  *sprite-bat-flap2*)
 
 ;; Load the spritesheet. Must be done after opening the window.
 (defun load-spritesheet ()

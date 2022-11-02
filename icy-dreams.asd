@@ -20,4 +20,5 @@
                (:file "object/roller")
                (:file "object/springy")
                (:file "object/hardened")
+               (:file "object/bat")
                (:file "main")))

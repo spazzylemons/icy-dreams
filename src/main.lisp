@@ -55,11 +55,9 @@
   (load-spritesheet)
   (load-stage)
 
-  ; uncomment to jump to last stage for testing
-  ; (block jump-last-stage
-  ;   (loop
-  ;     (unless *next-stages* (return-from jump-last-stage))
-  ;     (next-stage)))
+  ; uncomment to skip stages
+  ; (dotimes (n 3)
+    ; (next-stage))
   (raylib:with-audio-device
     (raylib:set-window-min-size *screen-width* *screen-height*)
     (let ((target-texture (raylib:load-render-texture *screen-width* *screen-height*)))
