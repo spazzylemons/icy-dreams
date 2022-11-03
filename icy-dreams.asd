@@ -3,7 +3,7 @@
   :version "0.1.0"
   :author "spazzylemons"
   :license "GPL3"
-  :depends-on (:cl-raylib :png)
+  :depends-on (:cl-raylib)
   :pathname "src"
   :serial t
   :components ((:file "package")
