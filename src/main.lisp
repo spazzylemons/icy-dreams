@@ -56,7 +56,7 @@
   (load-stage)
 
   ; uncomment to skip stages
-  ; (dotimes (n 3)
+  ; (dotimes (n 9)
     ; (next-stage))
   (raylib:with-audio-device
     (raylib:set-window-min-size *screen-width* *screen-height*)

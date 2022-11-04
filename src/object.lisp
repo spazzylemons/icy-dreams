@@ -71,7 +71,7 @@
   (let ((dx (abs (- (game-object-x obj1) (game-object-x obj2))))
         (dy (abs (- (mod (game-object-y obj1) (* *stage-height* 8))
                     (mod (game-object-y obj2) (* *stage-height* 8))))))
-  (and (<= dx 16) (<= dy 16))))
+  (and (< dx 16) (< dy 16))))
 
 ;; Update all objects.
 (defun update-objects ()
@@ -147,6 +147,7 @@
   ; object-object collision
   (dolist (obj1 *game-objects*)
     (let ((attack-collision nil)
+          (player-collision nil)
           (ice-block-bhv nil)
           (ice-block-collision nil))
       (dolist (obj2 *game-objects*)
@@ -159,6 +160,8 @@
             ; if so, check collision result
             (cond ((and (equal collision1 'enemy) (equal collision2 'attack))
                    (unless attack-collision (setq attack-collision obj2)))
+                  ((and (equal collision1 'enemy) (equal collision2 'player))
+                   (unless player-collision (setq player-collision obj2)))
                   ((and (equal collision1 'enemy) (equal collision2 'ice-block) (game-object-throw obj2))
                    (unless ice-block-collision (setq ice-block-collision obj2) (setq ice-block-bhv bhv1)))))))
       ; check collisions, handle one based on priority
@@ -170,7 +173,16 @@
                 (despawn obj1)))
             (attack-collision
               (turn-to-ice obj1)
-              (despawn attack-collision)))))
+              (despawn attack-collision))
+            (player-collision
+              ; give the player collision a bit more leeway - 12 pixels instead of 16
+              (let ((dx (abs (- (game-object-x obj1) (game-object-x player-collision))))
+                    (dy (abs (- (mod (game-object-y obj1) (* *stage-height* 8))
+                                (mod (game-object-y player-collision) (* *stage-height* 8))))))
+                (when (and (< dx 12) (< dy 12))
+                  ; just respawn player for now
+                  (despawn player-collision)
+                  (spawn-player)))))))
   (block try-next-stage
     ; is the timer running?
     (when *stage-advance-timer*

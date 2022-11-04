@@ -10,7 +10,7 @@
 (defparameter *stage-height* 24)
 
 ;; The maximum velocity.
-(defparameter *terminal-velocity* 3.5)
+(defparameter *terminal-velocity* 2.875)
 
 ;; The speed of gravity.
-(defparameter *gravity* 0.125)
+(defparameter *gravity* 0.09375)
