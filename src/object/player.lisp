@@ -15,7 +15,9 @@
     (setf (game-object-xvel obj) (+ (game-object-xvel obj) *player-accel*)))
   (when (and (game-object-grounded obj) (raylib:is-key-pressed raylib:+key-x+))
     (setf (game-object-yvel obj) (- *terminal-velocity*)))
-  (when (raylib:is-key-pressed raylib:+key-z+)
+  (when (and (raylib:is-key-pressed raylib:+key-z+) (not (game-object-other-timer obj)))
+    ; set anim timer for cooldown
+    (setf (game-object-other-timer obj) 5)
     ; are we holding ice?
     (if (game-object-throw obj)
       ; holding ice, throw
@@ -51,8 +53,7 @@
 (defun draw-player (obj)
   (when (game-object-throw obj)
     (draw-sprite (game-object-x obj) (- (game-object-y obj) 16.0) *sprite-ice-block* nil))
-  ; TODO this doesn't really show the throw player attack sprite
-  (let ((sprite (cond ((raylib:is-key-down raylib:+key-z+) *sprite-player-attack*)
+  (let ((sprite (cond ((and (game-object-other-timer obj) (not (game-object-throw obj))) *sprite-player-attack*)
                       ((not (game-object-grounded obj)) *sprite-player-walk2*)
                       ((= (game-object-xvel obj) 0.0) *sprite-player-idle*)
                       (t (aref *player-walk-sprites* (floor (* (game-object-anim-timer obj) 4)))))))

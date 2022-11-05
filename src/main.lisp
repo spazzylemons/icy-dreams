@@ -16,7 +16,6 @@
   (raylib:draw-rectangle 0 0 *screen-width* 16 raylib:+black+)
   (raylib:draw-rectangle 0 (- *screen-height* 16) *screen-width* 16 raylib:+black+))
 
-
 (defun main-loop-with-music (target-texture music)
   (raylib:play-music-stream music)
   (loop
@@ -56,8 +55,8 @@
   (load-stage)
 
   ; uncomment to skip stages
-  ; (dotimes (n 9)
-    ; (next-stage))
+  (dotimes (n 18)
+    (next-stage))
   (raylib:with-audio-device
     (raylib:set-window-min-size *screen-width* *screen-height*)
     (let ((target-texture (raylib:load-render-texture *screen-width* *screen-height*)))

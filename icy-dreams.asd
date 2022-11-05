@@ -21,4 +21,5 @@
                (:file "object/springy")
                (:file "object/hardened")
                (:file "object/bat")
+               (:file "object/dispenser")
                (:file "main")))

@@ -8,11 +8,13 @@
 (setf (gethash (raylib::make-rgba 0 255 0 255) *stage-palette*) 3)
 (setf (gethash (raylib::make-rgba 0 0 255 255) *stage-palette*) 4)
 (setf (gethash (raylib::make-rgba 255 0 255 255) *stage-palette*) 5)
+(setf (gethash (raylib::make-rgba 255 255 0 255) *stage-palette*) 6)
 
 (defparameter *stages* (list
   (make-stage-desc :tile 0)
   (make-stage-desc :tile 1)
   (make-stage-desc :tile 2)
+  (make-stage-desc :tile 0)
   (make-stage-desc :tile 0)
   (make-stage-desc :tile 0)
   (make-stage-desc :tile 0)

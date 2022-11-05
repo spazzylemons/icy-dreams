@@ -43,7 +43,8 @@
   *sprite-hardened-hide*
   *sprite-bat-hang*
   *sprite-bat-flap1*
-  *sprite-bat-flap2*)
+  *sprite-bat-flap2*
+  *sprite-dispenser*)
 
 ;; Load the spritesheet. Must be done after opening the window.
 (defun load-spritesheet ()

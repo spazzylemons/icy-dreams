@@ -6,6 +6,9 @@
 ;; Forward declaration for bat special case.
 (defparameter *behavior-bat* nil)
 
+;; Forward declaration for dispenser special case.
+(defparameter *behavior-dispenser* nil)
+
 ;; The list of game objects.
 (defparameter *game-objects* nil)
 
@@ -158,7 +161,7 @@
           ; do they collide?
           (when (object-collision obj1 obj2)
             ; if so, check collision result
-            (cond ((and (equal collision1 'enemy) (equal collision2 'attack))
+            (cond ((and (equal collision1 'enemy) (equal collision2 'attack) (not (equal bhv1 *behavior-dispenser*)))
                    (unless attack-collision (setq attack-collision obj2)))
                   ((and (equal collision1 'enemy) (equal collision2 'player))
                    (unless player-collision (setq player-collision obj2)))

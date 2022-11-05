@@ -36,4 +36,6 @@
   (let ((result (spawn *behavior-roller*)))
     (setf (game-object-x result) x)
     (setf (game-object-y result) y)
+    ; choose direction based on location
+    (if (< x 128) (setf (game-object-direction result) 'left))
     result))
