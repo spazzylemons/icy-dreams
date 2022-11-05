@@ -31,6 +31,7 @@
   *sprite-player-throw-walk1*
   *sprite-player-throw-walk2*
   *sprite-player-throw-attack*
+  *sprite-player-death*
   *sprite-ice-cloud*
   *sprite-ice-block*
   *sprite-ice-shard*

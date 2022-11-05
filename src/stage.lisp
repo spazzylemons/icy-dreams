@@ -54,7 +54,7 @@
 
 (defun load-stage ()
   (reset-objects)
-  (spawn-player)
+  (spawn-player 0)
   (setf *level-transition-timer* 8)
   (unless *stage-texture*
     (setq *stage-texture* (raylib:load-render-texture (* *stage-width* 8) (* *stage-height* 8))))

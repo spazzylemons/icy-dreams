@@ -42,6 +42,8 @@
                   :other-timer nil
                   :throw nil
                   :hit-wall nil
+                  :iframes 0
+                  :dead nil
                   :id (gensym)
                   :bhv bhv)))
     (push result *pending-objects*)
@@ -87,6 +89,8 @@
       (decf (game-object-other-timer obj))
       (when (<= (game-object-other-timer obj) 0)
         (setf (game-object-other-timer obj) nil)))
+    (when (> (game-object-iframes obj) 0)
+      (decf (game-object-iframes obj)))
     (when (game-object-despawn-timer obj)
       (decf (game-object-despawn-timer obj))
       (when (<= (game-object-despawn-timer obj) 0)
@@ -163,7 +167,7 @@
             ; if so, check collision result
             (cond ((and (equal collision1 'enemy) (equal collision2 'attack) (not (equal bhv1 *behavior-dispenser*)))
                    (unless attack-collision (setq attack-collision obj2)))
-                  ((and (equal collision1 'enemy) (equal collision2 'player))
+                  ((and (equal collision1 'enemy) (equal collision2 'player) (= (game-object-iframes obj2) 0))
                    (unless player-collision (setq player-collision obj2)))
                   ((and (equal collision1 'enemy) (equal collision2 'ice-block) (game-object-throw obj2))
                    (unless ice-block-collision (setq ice-block-collision obj2) (setq ice-block-bhv bhv1)))))))
@@ -183,9 +187,8 @@
                     (dy (abs (- (mod (game-object-y obj1) (* *stage-height* 8))
                                 (mod (game-object-y player-collision) (* *stage-height* 8))))))
                 (when (and (< dx 12) (< dy 12))
-                  ; just respawn player for now
-                  (despawn player-collision)
-                  (spawn-player)))))))
+                  ; put player into death state
+                  (kill-player player-collision)))))))
   (block try-next-stage
     ; is the timer running?
     (when *stage-advance-timer*
