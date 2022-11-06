@@ -14,3 +14,6 @@
 
 ;; The condition in which a game is lost.
 (define-condition game-lost () ())
+
+;; The condition in which the program should exit.
+(define-condition game-exit () ())

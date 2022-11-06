@@ -2,29 +2,44 @@
 
 (defparameter *game-paused* nil)
 
+(defparameter *title-texture* nil)
+(defparameter *gameover-texture* nil)
+(defparameter *gamewin-texture* nil)
+
+(defparameter *fullscreen-texture* nil)
+
 (defun update-game (music)
-  (when (raylib:is-key-pressed raylib:+key-p+)
-    (setf *game-paused* (not *game-paused*))
-    (if *game-paused* (raylib:pause-music-stream music) (raylib:play-music-stream music)))
-  (unless *game-paused*
-    (if *level-transition-timer*
-      (when (= *level-transition-timer* 0)
-        (prerender-stage))
-      (update-objects))))
+  (if *fullscreen-texture*
+    (when (raylib:is-key-pressed raylib:+key-enter+)
+      (unless (equal *fullscreen-texture* *title-texture*)
+        (signal 'game-exit))
+      (setf *fullscreen-texture* nil)))
+  (unless *fullscreen-texture*
+    (when (raylib:is-key-pressed raylib:+key-p+)
+      (setf *game-paused* (not *game-paused*))
+      (if *game-paused* (raylib:pause-music-stream music) (raylib:play-music-stream music)))
+    (unless *game-paused*
+      (if *level-transition-timer*
+        (when (= *level-transition-timer* 0)
+          (prerender-stage))
+        (update-objects)))))
 
 (defun render-game ()
-  (raylib:clear-background raylib:+black+)
-  (draw-stage)
-  (unless *level-transition-timer*
-    (draw-objects))
-  (draw-transition)
-  ; draw black bars to mask object wraparound
-  (raylib:draw-rectangle 0 0 *screen-width* 16 raylib:+black+)
-  (raylib:draw-rectangle 0 (- *screen-height* 16) *screen-width* 16 raylib:+black+)
-  (draw-score)
-  (printf 8 0 "LIVES ~a" *num-lives*)
-  (when *game-paused*
-    (printf 108 124 "PAUSE")))
+  (if *fullscreen-texture*
+    (raylib:draw-texture *fullscreen-texture* 0 0 raylib:+white+)
+    (progn
+      (raylib:clear-background raylib:+black+)
+      (draw-stage)
+      (unless *level-transition-timer*
+        (draw-objects))
+      (draw-transition)
+      ; draw black bars to mask object wraparound
+      (raylib:draw-rectangle 0 0 *screen-width* 16 raylib:+black+)
+      (raylib:draw-rectangle 0 (- *screen-height* 16) *screen-width* 16 raylib:+black+)
+      (draw-score)
+      (printf 8 0 "LIVES ~a" *num-lives*)
+      (when *game-paused*
+        (printf 108 124 "PAUSE")))))
 
 (defun main-loop-with-music (target-texture music)
   (raylib:play-music-stream music)
@@ -33,8 +48,10 @@
     (raylib:update-music-stream music)
     (handler-case (update-game music)
       (game-complete ()
-        (return))
+        (setf *fullscreen-texture* *gamewin-texture*))
       (game-lost ()
+        (setf *fullscreen-texture* *gameover-texture*))
+      (game-exit ()
         (return)))
     (let* ((scale (min (/ (float (raylib:get-screen-width)) *screen-width*)
                        (/ (float (raylib:get-screen-height)) *screen-height*)))
@@ -66,6 +83,10 @@
   (load-font)
   (load-spritesheet)
   (load-stage)
+  (setf *title-texture* (raylib:load-texture "assets/title.png"))
+  (setf *gameover-texture* (raylib:load-texture "assets/gameover.png"))
+  (setf *gamewin-texture* (raylib:load-texture "assets/gamewin.png"))
+  (setf *fullscreen-texture* *title-texture*)
   ; uncomment to skip stages
   ; (dotimes (n 18)
     ; (next-stage))
