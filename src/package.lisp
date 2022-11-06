@@ -1,2 +1,3 @@
 (defpackage :icy-dreams
-  (:use :cl))
+  (:use :cl)
+  (:export :buildapp-main))
