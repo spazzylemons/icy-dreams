@@ -9,6 +9,8 @@
   :components ((:file "package")
                (:file "constants")
                (:file "types")
+               (:file "text")
+               (:file "score")
                (:file "stages")
                (:file "stage")
                (:file "sprite")

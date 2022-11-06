@@ -14,7 +14,8 @@
   (draw-transition)
   ; draw black bars to mask object wraparound
   (raylib:draw-rectangle 0 0 *screen-width* 16 raylib:+black+)
-  (raylib:draw-rectangle 0 (- *screen-height* 16) *screen-width* 16 raylib:+black+))
+  (raylib:draw-rectangle 0 (- *screen-height* 16) *screen-width* 16 raylib:+black+)
+  (draw-score))
 
 (defun main-loop-with-music (target-texture music)
   (raylib:play-music-stream music)
@@ -51,9 +52,9 @@
 (raylib:set-config-flags '(:flag-window-resizable :flag-vsync-hint))
 (raylib:set-target-fps 60)
 (raylib:with-window ((* *screen-width* 2) (* *screen-height* 2) "Icy Dreams")
+  (load-font)
   (load-spritesheet)
   (load-stage)
-
   ; uncomment to skip stages
   ; (dotimes (n 18)
     ; (next-stage))

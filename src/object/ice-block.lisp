@@ -4,6 +4,7 @@
   (spawn-ice-shard obj)
   (spawn-ice-shard obj)
   (spawn-ice-shard obj)
+  (add-score (game-object-throw obj))
   (despawn obj))
 
 (defun update-ice-block (obj)
@@ -40,5 +41,5 @@
     (setf (game-object-y result) (- (game-object-y player) 8.0))
     (setf (game-object-xvel result) (if (equal (game-object-direction player) 'left) -2.0 2.0))
     (setf (game-object-yvel result) -0.5)
-    (setf (game-object-throw result) t)
+    (setf (game-object-throw result) 200)
     result))

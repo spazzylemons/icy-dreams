@@ -177,8 +177,12 @@
                 (progn
                   (shatter-ice-block ice-block-collision)
                   (setf (game-object-other-timer obj1) 20))
-                (despawn obj1)))
+                (progn
+                  (add-score (game-object-throw ice-block-collision))
+                  (setf (game-object-throw ice-block-collision) (* (game-object-throw ice-block-collision) 2))
+                  (despawn obj1))))
             (attack-collision
+              (add-score 10)
               (turn-to-ice obj1)
               (despawn attack-collision))
             (player-collision
