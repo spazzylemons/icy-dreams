@@ -88,8 +88,8 @@
   (setf *gamewin-texture* (raylib:load-texture "assets/gamewin.png"))
   (setf *fullscreen-texture* *title-texture*)
   ; uncomment to skip stages
-  ; (dotimes (n 18)
-    ; (next-stage))
+  ; (dotimes (n 29)
+  ;   (next-stage))
   (raylib:with-audio-device
     (raylib:set-window-min-size *screen-width* *screen-height*)
     (let ((target-texture (raylib:load-render-texture *screen-width* *screen-height*)))
