@@ -10,6 +10,9 @@
   (if (game-object-dead obj)
     (progn
       (when (= (game-object-iframes obj) 1)
+        (when (= *num-lives* 0)
+          (signal 'game-lost))
+        (decf *num-lives*)
         (spawn-player 120)
         (despawn obj)))
     (progn

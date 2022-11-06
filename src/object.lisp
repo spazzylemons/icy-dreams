@@ -21,6 +21,9 @@
 ;; A timer for advancing to the next stage.
 (defparameter *stage-advance-timer* nil)
 
+;; Number of lives.
+(defparameter *num-lives* 2)
+
 ;; Reset the object system.
 (defun reset-objects ()
   (setf *game-objects* nil)

@@ -15,7 +15,8 @@
   ; draw black bars to mask object wraparound
   (raylib:draw-rectangle 0 0 *screen-width* 16 raylib:+black+)
   (raylib:draw-rectangle 0 (- *screen-height* 16) *screen-width* 16 raylib:+black+)
-  (draw-score))
+  (draw-score)
+  (printf 8 0 "LIVES ~a" *num-lives*))
 
 (defun main-loop-with-music (target-texture music)
   (raylib:play-music-stream music)
@@ -24,6 +25,8 @@
     (raylib:update-music-stream music)
     (handler-case (update-game)
       (game-complete ()
+        (return))
+      (game-lost ()
         (return)))
     (let* ((scale (min (/ (float (raylib:get-screen-width)) *screen-width*)
                        (/ (float (raylib:get-screen-height)) *screen-height*)))

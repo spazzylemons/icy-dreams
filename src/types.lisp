@@ -11,3 +11,6 @@
 
 ;; The condition in which a game is completed.
 (define-condition game-complete () ())
+
+;; The condition in which a game is lost.
+(define-condition game-lost () ())
