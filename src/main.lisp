@@ -1,10 +1,16 @@
 (in-package :icy-dreams)
 
-(defun update-game ()
-  (if *level-transition-timer*
-    (when (= *level-transition-timer* 0)
-      (prerender-stage))
-    (update-objects)))
+(defparameter *game-paused* nil)
+
+(defun update-game (music)
+  (when (raylib:is-key-pressed raylib:+key-p+)
+    (setf *game-paused* (not *game-paused*))
+    (if *game-paused* (raylib:pause-music-stream music) (raylib:play-music-stream music)))
+  (unless *game-paused*
+    (if *level-transition-timer*
+      (when (= *level-transition-timer* 0)
+        (prerender-stage))
+      (update-objects))))
 
 (defun render-game ()
   (raylib:clear-background raylib:+black+)
@@ -16,14 +22,16 @@
   (raylib:draw-rectangle 0 0 *screen-width* 16 raylib:+black+)
   (raylib:draw-rectangle 0 (- *screen-height* 16) *screen-width* 16 raylib:+black+)
   (draw-score)
-  (printf 8 0 "LIVES ~a" *num-lives*))
+  (printf 8 0 "LIVES ~a" *num-lives*)
+  (when *game-paused*
+    (printf 108 124 "PAUSE")))
 
 (defun main-loop-with-music (target-texture music)
   (raylib:play-music-stream music)
   (loop
     (if (raylib:window-should-close) (return))
     (raylib:update-music-stream music)
-    (handler-case (update-game)
+    (handler-case (update-game music)
       (game-complete ()
         (return))
       (game-lost ()
