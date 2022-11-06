@@ -26,7 +26,10 @@
 
 (defun render-game ()
   (if *fullscreen-texture*
-    (raylib:draw-texture *fullscreen-texture* 0 0 raylib:+white+)
+    (progn
+      (raylib:draw-texture *fullscreen-texture* 0 0 raylib:+white+)
+      (unless (equal *fullscreen-texture* *title-texture*)
+        (printf (- 72 (* 4 (length (format nil "~a" *current-score*)))) 152 "YOUR SCORE IS ~a" *current-score*)))
     (progn
       (raylib:clear-background raylib:+black+)
       (draw-stage)
