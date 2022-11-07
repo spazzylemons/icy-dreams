@@ -1,0 +1,12 @@
+How to run the game:
+Windows users: The DLLs are included and the .exe file should run. If not, try installing MinGW.
+Linux users: Install raylib and libffi7 and run ./icy-dreams.
+
+Controls:
+Z to attack
+X to jump
+Left and Right arrow keys to move
+P to pause
+
+Game objective:
+Your brother has been kidnapped by the nightmares of the dream world! You enter the dream world to rescue him. Defeat each enemy on a stage to move to the next. You can turn most enemies into blocks of ice, and defeat most enemies by throwing blocks of ice at them. Bigger chains are worth more points. You have three lives to get through all 30 levels.
