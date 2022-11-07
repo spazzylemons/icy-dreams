@@ -6,5 +6,4 @@
 (sb-ext:save-lisp-and-die "icy-dreams.exe"
   :toplevel #'icy-dreams:buildapp-main
   :application-type :gui
-  :compression 9
   :executable t)
