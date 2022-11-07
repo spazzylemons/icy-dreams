@@ -23,8 +23,10 @@
         (setf (game-object-direction obj) 'right)
         (setf (game-object-xvel obj) (+ (game-object-xvel obj) *player-accel*)))
       (when (and (game-object-grounded obj) (raylib:is-key-pressed raylib:+key-x+))
+        (raylib:play-sound *sfx-jump*)
         (setf (game-object-yvel obj) (- *terminal-velocity*)))
       (when (and (raylib:is-key-pressed raylib:+key-z+) (not (game-object-other-timer obj)))
+        (raylib:play-sound *sfx-attack*)
         ; set anim timer for cooldown
         (setf (game-object-other-timer obj) 5)
         ; are we holding ice?

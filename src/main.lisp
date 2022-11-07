@@ -96,6 +96,9 @@
     ; (dotimes (n 29)
     ;   (next-stage))
     (raylib:with-audio-device
+      (setf *sfx-jump* (raylib:load-sound "assets/jump.ogg"))
+      (setf *sfx-attack* (raylib:load-sound "assets/attack.ogg"))
+      (setf *sfx-destroy* (raylib:load-sound "assets/destroy.ogg"))
       (raylib:set-window-min-size *screen-width* *screen-height*)
       (let ((target-texture (raylib:load-render-texture *screen-width* *screen-height*)))
         (unwind-protect (main-loop target-texture))

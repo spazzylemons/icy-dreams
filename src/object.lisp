@@ -187,11 +187,13 @@
                 (progn
                   (add-score (game-object-throw ice-block-collision))
                   (setf (game-object-throw ice-block-collision) (* (game-object-throw ice-block-collision) 2))
+                  (raylib:play-sound *sfx-destroy*)
                   (spawn-falling (game-object-x obj1) (game-object-y obj1) (object-bhv-hitsprite ice-block-bhv))
                   (despawn obj1))))
             (attack-collision
               (add-score 10)
               (turn-to-ice obj1)
+              (raylib:play-sound *sfx-destroy*)
               (despawn attack-collision))
             (player-collision
               ; give the player collision a bit more leeway - 12 pixels instead of 16
@@ -200,6 +202,7 @@
                                 (mod (game-object-y player-collision) (* *stage-height* 8))))))
                 (when (and (< dx 12) (< dy 12))
                   ; put player into death state
+                  (raylib:play-sound *sfx-destroy*)
                   (kill-player player-collision)))))))
   (block try-next-stage
     ; is the timer running?

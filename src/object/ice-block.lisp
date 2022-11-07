@@ -5,6 +5,7 @@
   (spawn-ice-shard obj)
   (spawn-ice-shard obj)
   (add-score (game-object-throw obj))
+  (raylib:play-sound *sfx-destroy*)
   (despawn obj))
 
 (defun update-ice-block (obj)
