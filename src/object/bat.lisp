@@ -48,7 +48,8 @@
 
 (setf *behavior-bat* (make-object-bhv :update #'update-bat
                                       :draw #'draw-bat
-                                      :collision 'enemy))
+                                      :collision 'enemy
+                                      :hitsprite *sprite-bat-flap1*))
 
 (defun spawn-bat (x y)
   (let ((result (spawn *behavior-bat*)))

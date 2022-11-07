@@ -30,7 +30,8 @@
 
 (defparameter *behavior-roller* (make-object-bhv :update #'update-roller
                                                  :draw #'draw-roller
-                                                 :collision 'enemy))
+                                                 :collision 'enemy
+                                                 :hitsprite *sprite-roller1*))
 
 (defun spawn-roller (x y)
   (let ((result (spawn *behavior-roller*)))

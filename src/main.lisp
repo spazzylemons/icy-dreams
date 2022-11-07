@@ -13,7 +13,8 @@
     (when (raylib:is-key-pressed raylib:+key-enter+)
       (unless (equal *fullscreen-texture* *title-texture*)
         (signal 'game-exit))
-      (setf *fullscreen-texture* nil)))
+      (setf *fullscreen-texture* nil)
+      (raylib:play-music-stream music)))
   (unless *fullscreen-texture*
     (when (raylib:is-key-pressed raylib:+key-p+)
       (setf *game-paused* (not *game-paused*))
@@ -45,7 +46,6 @@
         (printf 108 124 "PAUSE")))))
 
 (defun main-loop-with-music (target-texture music)
-  (raylib:play-music-stream music)
   (loop
     (if (raylib:window-should-close) (return))
     (raylib:update-music-stream music)

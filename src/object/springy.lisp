@@ -29,7 +29,8 @@
 
 (defparameter *behavior-springy* (make-object-bhv :update #'update-springy
                                                  :draw #'draw-springy
-                                                 :collision 'enemy))
+                                                 :collision 'enemy
+                                                 :hitsprite *sprite-spring-tall*))
 
 (defun spawn-springy (x y)
   (let ((result (spawn *behavior-springy*)))

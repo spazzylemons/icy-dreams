@@ -18,6 +18,7 @@
                (:file "object/ice-cloud")
                (:file "object/ice-shard")
                (:file "object/ice-block")
+               (:file "object/falling")
                (:file "object/player")
                (:file "object/roller")
                (:file "object/springy")

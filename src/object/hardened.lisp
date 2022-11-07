@@ -30,7 +30,8 @@
 
 (setf *behavior-hardened* (make-object-bhv :update #'update-hardened
                                            :draw #'draw-hardened
-                                           :collision 'enemy))
+                                           :collision 'enemy
+                                           :hitsprite *sprite-hardened-walk1*))
 
 (defun spawn-hardened (x y)
   (let ((result (spawn *behavior-hardened*)))

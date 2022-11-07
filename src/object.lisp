@@ -9,6 +9,9 @@
 ;; Forward declaration for dispenser special case.
 (defparameter *behavior-dispenser* nil)
 
+;; Forward declaration for falling special case.
+(defparameter *behavior-falling* nil)
+
 ;; The list of game objects.
 (defparameter *game-objects* nil)
 
@@ -153,7 +156,8 @@
                 0
                 (rem (+ (game-object-anim-timer obj) (abs (/ (game-object-xvel obj) 16))) 1))))
       ; wrap vertically
-      (setf (game-object-y obj) (mod (game-object-y obj) (* *stage-height* 8))))
+    (unless (eql (game-object-bhv obj) *behavior-falling*)
+      (setf (game-object-y obj) (mod (game-object-y obj) (* *stage-height* 8)))))
   ; object-object collision
   (dolist (obj1 *game-objects*)
     (let ((attack-collision nil)
@@ -183,6 +187,7 @@
                 (progn
                   (add-score (game-object-throw ice-block-collision))
                   (setf (game-object-throw ice-block-collision) (* (game-object-throw ice-block-collision) 2))
+                  (spawn-falling (game-object-x obj1) (game-object-y obj1) (object-bhv-hitsprite ice-block-bhv))
                   (despawn obj1))))
             (attack-collision
               (add-score 10)

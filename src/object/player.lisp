@@ -60,8 +60,7 @@
                                                        *sprite-player-idle*)))
 
 (defun draw-player (obj)
-  (if (game-object-dead obj)
-    (draw-sprite (game-object-x obj) (game-object-y obj) *sprite-player-death* (eql (game-object-direction obj) 'left))
+  (unless (game-object-dead obj)
     (when (< (mod (game-object-iframes obj) 8) 4)
       (when (game-object-throw obj)
         (draw-sprite (game-object-x obj) (- (game-object-y obj) 16.0) *sprite-ice-block* nil))
@@ -88,4 +87,9 @@
   ; use iframes for timing when to respawn
   (setf (game-object-iframes obj) 60)
   (setf (game-object-dead obj) t)
-  (setf (game-object-has-physics obj) nil))
+  (setf (game-object-has-physics obj) nil)
+  ; if holding ice block, drop it
+  (when (game-object-throw obj)
+    (drop-ice (game-object-x obj) (- (game-object-y obj) 8)))
+  ; spawn falling object for death anim
+  (spawn-falling (game-object-x obj) (game-object-y obj) *sprite-player-death*))

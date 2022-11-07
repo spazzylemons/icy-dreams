@@ -20,7 +20,8 @@
 
 (setf *behavior-dispenser* (make-object-bhv :update #'update-dispenser
                                             :draw #'draw-dispenser
-                                            :collision 'enemy))
+                                            :collision 'enemy
+                                            :hitsprite *sprite-dispenser*))
 
 (defun spawn-dispenser (x y)
   (let ((result (spawn *behavior-dispenser*)))

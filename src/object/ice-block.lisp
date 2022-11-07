@@ -34,6 +34,12 @@
     (setf (game-object-grounded result) (game-object-grounded obj))
     (despawn obj)
     result))
+
+(defun drop-ice (x y)
+  (let ((result (spawn *behavior-ice-block*)))
+    (setf (game-object-x result) x)
+    (setf (game-object-y result) y)
+    result))
  
 (defun throw-ice (player)
   (let ((result (spawn *behavior-ice-block*)))

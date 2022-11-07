@@ -4,7 +4,7 @@
 (defstruct game-object x y xvel yvel grounded has-physics anim-timer direction despawn-timer other-timer throw hit-wall iframes dead id bhv)
 
 ;; Behavior for an object.
-(defstruct object-bhv update draw collision)
+(defstruct object-bhv update draw collision hitsprite)
 
 ;; A stage description.
 (defstruct stage-desc tile tilemap)
